@@ -6,8 +6,13 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
+from scrapy.exceptions import DropItem
 
 
-class NextspaceflightPipeline:
+class NextspaceflightRemoveNoOrganizationPipeline:
     def process_item(self, item, spider):
-        return item
+        adapter = ItemAdapter(item)
+        if not adapter.get("organization"):
+            raise DropItem(f"No organization detected: {item}")
+        else:
+            return item
