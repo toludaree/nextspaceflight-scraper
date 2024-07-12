@@ -9,13 +9,26 @@ class FlightsSpider(CrawlSpider):
     name = "flights"
     allowed_domains = ["nextspaceflight.com"]
     start_urls = ["https://nextspaceflight.com/launches/past/?page=1&search="]
+    
     rules = (
+        # Space FLight Details
         Rule(
-            LinkExtractor(restrict_xpaths=(
-                "//div[contains(@class, 'mdl-cell')]" \
-                "//a[contains(@href, '/launches/details/')]")),
-        callback="parse",
-        follow=True),)
+            LinkExtractor(
+                restrict_xpaths="//div[contains(@class, 'mdl-cell')]" \
+                                "//a[contains(@href, '/launches/details/')]"
+            ),
+            callback="parse",
+            follow=True
+        ),
+        # Next Page
+        Rule(
+            LinkExtractor(
+                restrict_xpaths="//span[@class='step-links']//a[span='next']"
+            ),
+            callback="parse",
+            follow=True
+        ),
+    )
 
     def parse(self, response):
         item = ItemLoader(item=NextspaceflightItem(),
