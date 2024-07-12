@@ -32,10 +32,20 @@ class FlightsSpider(CrawlSpider):
         item.add_xpath("datetime",
                        "//h3[contains(text(), 'Status')]" \
                        "/following::section[1]" \
-                       "//div[@class='mdl-grid a']//span/text()")
+                       "//div[@class='mdl-cell']/span/text()")
+        
+        item.add_xpath("details",
+                       "//h3[contains(text(), 'Mission Details')]" \
+                       "/following::section[1]//h4/text()")
         item.add_xpath("details",
                        "//h3[contains(text(), 'Mission Details')]" \
                        "/following::section[1]//p/text()")
+        item.add_value("details", "break")    # divides the details field in 2
+        item.add_xpath("details",
+                       "//h3[contains(text(), 'Mission Details')]" \
+                       "/following::section[1]" \
+                       "//div[@class='mdl-cell']/text()")
+        
         item.add_xpath("price",
                        "//h3[contains(text(), 'Rocket')]" \
                        "/following::section[1]" \
@@ -48,6 +58,7 @@ class FlightsSpider(CrawlSpider):
                        "/text()")
         item.add_xpath("mission_status",
                        "//h3[contains(text(), 'Status')]" \
-                       "/following::section[1]/h6/span/text()")
+                       "/following::section[1]" \
+                       "/h6[contains(@class, 'status')]/span/text()")
 
         yield item.load_item()
